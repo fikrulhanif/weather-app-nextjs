@@ -1,11 +1,10 @@
 /**
- * `Providers` — wraps children with ThemeProvider, Toaster, and ErrorBoundary.
+ * `Providers` — App-wide providers (Toaster, ErrorBoundary, hydration)
  */
 
 "use client";
 
 import { useEffect } from "react";
-import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 
 import { ErrorBoundary } from "./ui/ErrorBoundary";
@@ -18,16 +17,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <ErrorBoundary>
-        {children}
-        <Toaster position="top-right" richColors />
-      </ErrorBoundary>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: "rgb(30 41 59)",
+            border: "1px solid rgb(51 65 85)",
+            color: "rgb(248 250 252)",
+          },
+        }}
+      />
+      {children}
+    </ErrorBoundary>
   );
 }

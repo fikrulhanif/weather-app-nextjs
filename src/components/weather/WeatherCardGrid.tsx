@@ -1,5 +1,5 @@
 /**
- * `WeatherCardGrid` — cards for temp, humidity, wind, UV, precipitation, last update.
+ * `WeatherCardGrid` — Compact weather info grid tanpa individual card borders
  */
 
 "use client";
@@ -33,9 +33,9 @@ export interface WeatherCardGridProps {
 export function WeatherCardGrid({ current, loading }: WeatherCardGridProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-24" />
+          <Skeleton key={i} className="h-20 rounded-lg skeleton" />
         ))}
       </div>
     );
@@ -49,57 +49,65 @@ export function WeatherCardGrid({ current, loading }: WeatherCardGridProps) {
       label: "Suhu",
       value: formatTemperature(current.temperatureC),
       subValue: `Terasa ${formatTemperature(current.apparentTemperatureC)}`,
+      color: "text-orange-400",
     },
     {
       icon: CloudRain,
       label: weatherConditionLabel(current.condition),
       value: formatPrecipitation(current.precipitationMm),
-      subValue: `${current.rainProbabilityPct}% kemungkinan hujan`,
+      subValue: `${current.rainProbabilityPct}% hujan`,
+      color: "text-blue-400",
     },
     {
       icon: Droplets,
       label: "Kelembaban",
       value: formatHumidity(current.humidityPct),
       subValue: null,
+      color: "text-cyan-400",
     },
     {
       icon: Wind,
       label: "Angin",
       value: formatWindSpeed(current.windSpeedKmh),
-      subValue: `Arah ${current.windDirectionDeg}°`,
+      subValue: `${current.windDirectionDeg}°`,
+      color: "text-teal-400",
     },
     {
       icon: Sun,
-      label: "Indeks UV",
+      label: "UV Index",
       value: formatUv(current.uvIndex),
       subValue: getUvLabel(current.uvIndex),
+      color: "text-yellow-400",
     },
     {
       icon: Clock,
-      label: "Diperbarui",
+      label: "Update",
       value: formatTime(current.observedAt),
       subValue: null,
+      color: "text-purple-400",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
       {cards.map((card, i) => (
         <div
           key={i}
-          className="glass rounded-lg p-4 transition-shadow hover:shadow-md"
+          className="bg-gray-900/50 border border-gray-800/50 rounded-lg p-4 transition-all hover:bg-gray-900/70 hover:border-gray-700/50"
         >
           <div className="flex items-start gap-3">
-            <div className="rounded-md bg-primary/10 p-2">
-              <card.icon className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm text-muted-foreground">{card.label}</p>
-              <p className="mt-1 text-2xl font-semibold text-foreground">
+            <card.icon
+              className={`h-5 w-5 ${card.color} flex-shrink-0 mt-0.5`}
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-gray-400 uppercase tracking-wide">
+                {card.label}
+              </p>
+              <p className="mt-1 text-xl font-semibold text-white truncate">
                 {card.value}
               </p>
               {card.subValue && (
-                <p className="mt-1 text-xs text-muted-foreground">
+                <p className="mt-0.5 text-xs text-gray-500 truncate">
                   {card.subValue}
                 </p>
               )}

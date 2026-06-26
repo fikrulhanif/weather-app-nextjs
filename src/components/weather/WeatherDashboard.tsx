@@ -1,25 +1,27 @@
 /**
- * `WeatherDashboard` — main composition: alerts + cards + hourly + daily.
+ * `WeatherDashboard` — Main weather content dengan sections yang jelas
  */
 
 "use client";
 
 import { RefreshCw } from "lucide-react";
+import dynamic from "next/dynamic";
 
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ErrorView } from "@/components/ui/ErrorView";
 import { AlertList } from "@/components/alerts/AlertList";
 import { WeatherCardGrid } from "./WeatherCardGrid";
 import { DailyForecast } from "./DailyForecast";
-import dynamic from "next/dynamic";
-
 import { useWeather } from "@/hooks/use-weather";
 
-// Dynamic import for HourlyChart to avoid SSR issues with Chart.js
+// Dynamic import for HourlyChart
 const HourlyChart = dynamic(
   () =>
     import("@/components/charts/HourlyChart").then((mod) => mod.HourlyChart),
-  { ssr: false, loading: () => <Skeleton className="h-64 w-full" /> },
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-64 w-full rounded-lg skeleton" />,
+  },
 );
 
 export function WeatherDashboard() {
@@ -29,11 +31,11 @@ export function WeatherDashboard() {
   // Error state
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-12">
+      <div className="weather-card p-6">
         <ErrorView error={error} onRetry={refreshWeather} />
         {error.kind === "network_offline" && (
-          <div className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
-            Tidak ada koneksi internet. Silakan periksa koneksi Anda.
+          <div className="mt-4 rounded-lg border border-red-900/50 bg-red-500/5 px-4 py-3 text-sm text-red-400">
+            Tidak ada koneksi internet
           </div>
         )}
       </div>
@@ -43,29 +45,10 @@ export function WeatherDashboard() {
   // Loading skeleton
   if (loading && !weatherData) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-24" />
-          ))}
-        </div>
-        <Skeleton className="h-64 w-full" />
-      </div>
-    );
-  }
-
-  // Empty state
-  if (!selectedCity && !loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="mb-4 text-6xl">🌤️</div>
-        <h3 className="mb-2 text-lg font-semibold text-foreground">
-          Cari Kota Indonesia
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          Gunakan kotak pencarian di atas untuk memilih kota
-        </p>
+      <div className="space-y-4">
+        <Skeleton className="h-20 w-full rounded-lg skeleton" />
+        <Skeleton className="h-64 w-full rounded-lg skeleton" />
+        <Skeleton className="h-64 w-full rounded-lg skeleton" />
       </div>
     );
   }
@@ -73,13 +56,13 @@ export function WeatherDashboard() {
   // Main content
   return (
     <div className="space-y-6">
-      {/* City header with refresh */}
-      <div className="flex items-center justify-between">
+      {/* City header */}
+      <div className="weather-card p-4 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">
+          <h2 className="text-xl font-semibold text-white">
             {selectedCity?.name || weatherData?.city.name}
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-400">
             {selectedCity?.admin1 && `${selectedCity.admin1}, `}
             {selectedCity?.country || "Indonesia"}
           </p>
@@ -87,25 +70,31 @@ export function WeatherDashboard() {
         <button
           onClick={refreshWeather}
           disabled={loading}
-          className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-sm font-medium text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+          <span className="hidden sm:inline">Refresh</span>
         </button>
       </div>
 
       {/* Alerts */}
       {alerts.length > 0 && <AlertList alerts={alerts} />}
 
-      {/* Weather cards */}
-      <WeatherCardGrid
-        current={weatherData?.current || null}
-        loading={loading}
-      />
+      {/* Weather Info Section - WRAPPED IN CONTAINER */}
+      <div className="weather-card p-5">
+        <h3 className="mb-4 text-sm font-semibold text-white uppercase tracking-wide">
+          Informasi Cuaca Saat Ini
+        </h3>
+        <WeatherCardGrid
+          current={weatherData?.current || null}
+          loading={loading}
+        />
+      </div>
 
       {/* Hourly chart */}
       {weatherData && weatherData.hourly.length > 0 && (
-        <div className="glass rounded-lg p-4">
-          <h3 className="mb-4 text-sm font-semibold text-foreground">
+        <div className="weather-card p-5">
+          <h3 className="mb-4 text-sm font-semibold text-white uppercase tracking-wide">
             Forecast 24 Jam
           </h3>
           <HourlyChart hourly={weatherData.hourly} />
@@ -114,8 +103,8 @@ export function WeatherDashboard() {
 
       {/* Daily forecast */}
       {weatherData && weatherData.daily.length > 0 && (
-        <div>
-          <h3 className="mb-3 text-sm font-semibold text-foreground">
+        <div className="weather-card p-5">
+          <h3 className="mb-4 text-sm font-semibold text-white uppercase tracking-wide">
             Forecast 7 Hari
           </h3>
           <DailyForecast daily={weatherData.daily} />

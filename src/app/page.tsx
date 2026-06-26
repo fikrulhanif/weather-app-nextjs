@@ -1,11 +1,10 @@
 /**
- * Home page — Weather Alert Indonesia dashboard
- * Layout: Header with search + main grid (dashboard, map, favorites)
- * Responsive: single column mobile, 2-col tablet, 3-col desktop
+ * Home page — Clean, professional weather dashboard
  */
 
 "use client";
 
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 
 import { Header } from "@/components/ui/Header";
@@ -16,46 +15,62 @@ import { FavoritesPanel } from "@/components/weather/FavoritesPanel";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useWeather } from "@/hooks/use-weather";
 import { useFavorites } from "@/hooks/use-favorites";
+import type { City } from "@/types/weather";
 
 // Dynamic import for WeatherMap (SSR-safe)
 const WeatherMap = dynamic(
   () => import("@/components/map/WeatherMap").then((mod) => mod.WeatherMap),
   {
     ssr: false,
-    loading: () => <Skeleton className="h-96 w-full" />,
+    loading: () => (
+      <Skeleton className="h-[300px] w-full rounded-lg skeleton" />
+    ),
   },
 );
 
+// Default city: Jakarta
+const DEFAULT_CITY: City = {
+  id: "-6.175:106.827",
+  name: "Jakarta",
+  displayName: "Jakarta, Indonesia",
+  coordinates: { latitude: -6.1751, longitude: 106.8272 },
+  country: "Indonesia",
+  admin1: "Jakarta",
+};
+
 export default function Home() {
-  const { selectedCity, selectCity } = useWeather();
+  const { selectedCity, selectCity, loading } = useWeather();
   const { favorites } = useFavorites();
 
+  // Auto-load Jakarta on first mount
+  useEffect(() => {
+    if (!selectedCity && !loading) {
+      selectCity(DEFAULT_CITY);
+    }
+  }, [selectedCity, loading, selectCity]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      {/* Header with search */}
+    <div className="min-h-screen bg-[#0A0F19]">
+      {/* Header */}
       <Header>
-        <div className="w-full max-w-md">
-          <CitySearch />
-        </div>
+        <CitySearch />
       </Header>
 
-      {/* Main content grid */}
-      <main className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Dashboard - main content */}
-          <div className="lg:col-span-8">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Main Dashboard (2/3 width on desktop) */}
+          <div className="lg:col-span-2 space-y-6">
             <WeatherDashboard />
           </div>
 
-          {/* Sidebar - Map + Favorites */}
-          <div className="space-y-6 lg:col-span-4">
-            {/* Map with error boundary */}
+          {/* Right Column - Sidebar (1/3 width on desktop) */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Map */}
             <ErrorBoundary
               fallback={
-                <div className="glass flex h-96 items-center justify-center rounded-lg">
-                  <p className="text-sm text-muted-foreground">
-                    Peta tidak tersedia
-                  </p>
+                <div className="weather-card flex h-[300px] items-center justify-center p-6">
+                  <p className="text-sm text-gray-500">Peta tidak tersedia</p>
                 </div>
               }
             >
@@ -66,7 +81,7 @@ export default function Home() {
               />
             </ErrorBoundary>
 
-            {/* Favorites panel */}
+            {/* Favorites */}
             <FavoritesPanel />
           </div>
         </div>
