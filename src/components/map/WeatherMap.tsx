@@ -51,6 +51,7 @@ export function WeatherMap({
       mapRef.current = map;
 
       // Fix icon paths for Leaflet in Next.js
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl:

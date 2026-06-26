@@ -119,9 +119,14 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
         loading: false,
         _abortController: null,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Ignore AbortError when request was cancelled (Req 13.5)
-      if (error?.name === "AbortError" || error?.name === "CanceledError") {
+      if (
+        error &&
+        typeof error === "object" &&
+        "name" in error &&
+        (error.name === "AbortError" || error.name === "CanceledError")
+      ) {
         return;
       }
 
@@ -172,7 +177,7 @@ export const useWeatherStore = create<WeatherStore>((set, get) => ({
         upcomingAlerts,
         loading: false,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       clearTimeout(timeoutId);
 
       // Retain previous data on failure (Req 7.7)

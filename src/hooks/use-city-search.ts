@@ -120,9 +120,14 @@ export function useCitySearch() {
       }
 
       setLoading(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Ignore AbortError
-      if (error?.name === "AbortError" || error?.name === "CanceledError") {
+      if (
+        error &&
+        typeof error === "object" &&
+        "name" in error &&
+        (error.name === "AbortError" || error.name === "CanceledError")
+      ) {
         return;
       }
 
@@ -156,8 +161,14 @@ export function useCitySearch() {
       normalized.length < SEARCH_MIN_QUERY_LENGTH ||
       normalized.length > SEARCH_MAX_QUERY_LENGTH
     ) {
-      setSuggestions([]);
-      setLoading(false);
+      // Clear suggestions without triggering search
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+      debounceTimer.current = setTimeout(() => {
+        setSuggestions([]);
+        setLoading(false);
+      }, 0);
       return;
     }
 

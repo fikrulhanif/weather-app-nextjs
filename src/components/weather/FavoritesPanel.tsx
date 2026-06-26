@@ -10,7 +10,7 @@ import { useFavorites } from "@/hooks/use-favorites";
 import { useWeather } from "@/hooks/use-weather";
 
 export function FavoritesPanel() {
-  const { favorites, removeFavorite, isFavorite } = useFavorites();
+  const { favorites, removeFavorite } = useFavorites();
   const { selectCity, selectedCity } = useWeather();
 
   if (favorites.length === 0) {

@@ -12,7 +12,6 @@
  */
 
 import type { City, Coordinates } from "@/types/weather";
-import type { NominatimResponse } from "@/types/schemas";
 
 import { NOMINATIM_REVERSE_PATH, NOMINATIM_SEARCH_PATH } from "@/constants/api";
 import {

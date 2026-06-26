@@ -9,11 +9,7 @@
 
 import { toast } from "sonner";
 
-import {
-  useWeatherStore,
-  selectFavorites,
-  selectIsFavorite,
-} from "@/store/weather-store";
+import { useWeatherStore, selectFavorites } from "@/store/weather-store";
 import { MAX_FAVORITES } from "@/constants/thresholds";
 import type { City } from "@/types/weather";
 
@@ -51,14 +47,9 @@ export function useFavorites() {
     }
   };
 
-  const isFavorite = (cityId: string) => {
-    return useWeatherStore(selectIsFavorite(cityId));
-  };
-
   return {
     favorites,
     addFavorite,
     removeFavorite,
-    isFavorite,
   };
 }
