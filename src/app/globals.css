@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
+/**
+ * Weather Alert Indonesia — Custom theme with glassmorphism and gradient base.
+ *
+ * Light + dark themes, Indonesian-friendly font stack, responsive breakpoints,
+ * and utility classes for the dashboard cards, header, and map overlays.
+ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: 240 100% 99%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222 47% 11%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 221 83% 53%;
+  --radius: 0.5rem;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
+  --card: 222 47% 14%;
+  --card-foreground: 210 40% 98%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 223 47% 20%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 217 33% 17%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 63% 50%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217 33% 17%;
+  --input: 217 33% 17%;
+  --ring: 224 76% 48%;
+}
+
+* {
+  border-color: hsl(var(--border));
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--background)) 0%,
+    hsl(var(--muted)) 100%
+  );
+  color: hsl(var(--foreground));
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  font-feature-settings: "kern", "liga", "clig", "calt";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: hsl(var(--card) / 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.2);
+}
+
+/* Alert severity colors */
+.alert-low {
+  background: hsl(142 71% 45% / 0.1);
+  border-color: hsl(142 71% 45% / 0.3);
+  color: hsl(142 71% 35%);
+}
+
+.alert-medium {
+  background: hsl(38 92% 50% / 0.1);
+  border-color: hsl(38 92% 50% / 0.3);
+  color: hsl(38 92% 35%);
+}
+
+.alert-high {
+  background: hsl(0 84% 60% / 0.1);
+  border-color: hsl(0 84% 60% / 0.3);
+  color: hsl(0 84% 45%);
+}
+
+.dark .alert-low {
+  background: hsl(142 71% 45% / 0.15);
+  border-color: hsl(142 71% 45% / 0.4);
+  color: hsl(142 71% 70%);
+}
+
+.dark .alert-medium {
+  background: hsl(38 92% 50% / 0.15);
+  border-color: hsl(38 92% 50% / 0.4);
+  color: hsl(38 92% 70%);
+}
+
+.dark .alert-high {
+  background: hsl(0 84% 60% / 0.15);
+  border-color: hsl(0 84% 60% / 0.4);
+  color: hsl(0 84% 75%);
 }
